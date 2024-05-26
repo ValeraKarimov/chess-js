@@ -1,8 +1,9 @@
 let map = [];
+let inf = [];
 function initMap () {
     // map [x] [y]
     map = [
-    //   y0   y1   y2
+    //   y0   y1   y2   y3   y4   y5   y6   y7
         ["R", "P", " ", " ", " ", " ", "p", "r",], // x = 0
         ["N", "P", " ", " ", " ", " ", "p", "n",], // x = 1
         ["B", "P", " ", " ", " ", " ", "p", "b",], // x = 2
@@ -12,6 +13,18 @@ function initMap () {
         ["N", "P", " ", " ", " ", " ", "p", "n",], // x = 6
         ["R", "P", " ", " ", " ", " ", "p", "r",]  // x = 7
     ]
+}
+function initInf () {
+    inf = [
+        [" ", " ", " ", " ", " ", " ", " ", " ",],
+        [" ", " ", " ", " ", " ", " ", " ", " ",],
+        [" ", " ", " ", " ", " ", " ", " ", " ",],
+        [" ", " ", " ", " ", " ", " ", " ", " ",],
+        [" ", "1", "2", "2", " ", " ", " ", " ",],
+        [" ", " ", " ", " ", " ", " ", " ", " ",],
+        [" ", " ", " ", " ", " ", " ", " ", " ",],
+        [" ", " ", " ", " ", " ", " ", " ", " ",]
+    ];
 }
 function figureToHTML (figure) {
     switch (figure) {
@@ -32,7 +45,12 @@ function showMap () {
         html += "<td>"+ y +"</td>";
         for (let x = 0; x <= 7; x++)
             {
+                if (inf [x] [y] == " ") {
                 color = (x + y) % 2 ? '#eeffee' : '#abcdef';
+                }
+                else {
+                    color = inf [x] [y] == "1" ? "#aaffaa" : "#ffaaaa";
+                }
                 html += "<td height=50 width=50 " + 
                         "style='background-color: "+color+";" + 
                         "text-align: center;" + 
@@ -51,4 +69,5 @@ function showMap () {
     document.getElementById ("board").innerHTML = html;
 }
 initMap();
+initInf();
 showMap();
