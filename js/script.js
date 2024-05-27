@@ -1,5 +1,8 @@
 let map = [];
 let inf = [];
+
+let moveColor = "white";
+
 function initMap () {
     // map [x] [y]
     map = [
@@ -19,13 +22,36 @@ function initInf () {
         [" ", " ", " ", " ", " ", " ", " ", " ",],
         [" ", " ", " ", " ", " ", " ", " ", " ",],
         [" ", " ", " ", " ", " ", " ", " ", " ",],
-        [" ", "1", "2", "2", " ", " ", " ", " ",],
+        [" ", " ", " ", " ", " ", " ", " ", " ",],
         [" ", " ", " ", " ", " ", " ", " ", " ",],
         [" ", " ", " ", " ", " ", " ", " ", " ",],
         [" ", " ", " ", " ", " ", " ", " ", " ",],
         [" ", " ", " ", " ", " ", " ", " ", " ",]
     ];
 }
+
+function marksMoveFrom () {
+    initInf ();
+    for (let x = 0; x <= 7; x++) {
+        for (let y = 0; y <= 7; y++) {
+            if (canMoveFrom (x, y)) {
+                inf [x] [y] = 1;
+            }
+        }
+    }
+}
+
+function canMoveFrom (x, y) {
+    return getColor (x, y) == moveColor;
+}
+
+function getColor (x, y) {
+    let figure = map [x] [y];
+    if (figure == " ") 
+        return "";
+    return (figure.toUpperCase() == figure) ? "white" : "black";
+}
+
 function figureToHTML (figure) {
     switch (figure) {
         case "K" : return "&#9812;"; case "k" : return "&#9818;";
@@ -69,5 +95,5 @@ function showMap () {
     document.getElementById ("board").innerHTML = html;
 }
 initMap();
-initInf();
+marksMoveFrom();
 showMap();
