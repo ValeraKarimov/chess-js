@@ -2,6 +2,8 @@ let map = [];
 let inf = [];
 
 let moveColor = "white";
+let moveFromX;
+let moveFromY;
 
 function initMap () {
     // map [x] [y]
@@ -41,8 +43,26 @@ function marksMoveFrom () {
     }
 }
 
+function marksMoveTo () {
+    initInf ();
+    for (let x = 0; x <= 7; x++) {
+        for (let y = 0; y <= 7; y++) {
+            if (canMoveTo (x, y)) {
+                inf [x] [y] = 2;
+            }
+        }
+    }
+}
+
 function canMoveFrom (x, y) {
     return getColor (x, y) == moveColor;
+}
+
+function canMoveTo (x, y) {
+    if (map [x] [y] == " ") {
+        return true;
+    }
+    return getColor (x, y) != moveColor; // white can go to black
 }
 
 function getColor (x, y) {
@@ -50,6 +70,25 @@ function getColor (x, y) {
     if (figure == " ") 
         return "";
     return (figure.toUpperCase() == figure) ? "white" : "black";
+}
+
+function clickBox (x, y) {
+    if (inf [x] [y] == '1') {
+        clickBoxFrom(x, y);
+    } else if (inf [x] [y] == '2') {
+        clickBoxTo(x, y);
+    }
+}
+
+function clickBoxFrom (x, y) {
+    moveFromX = x;
+    moveFromY = y;
+    marksMoveTo();
+    showMap();
+}
+
+function clickBoxTo (x, y) {
+    
 }
 
 function figureToHTML (figure) {
@@ -81,7 +120,8 @@ function showMap () {
                         "style='background-color: "+color+";" + 
                         "text-align: center;" + 
                         "font-size: 40px; " +
-                        "color: #000000'>";
+                        "color: #000000; " +
+                        "'onclick='clickBox("+ x +", "+ y +");'>";
                 html += figureToHTML (map [x] [y]);
                 html +="</td>";
             }
