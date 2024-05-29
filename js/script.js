@@ -88,7 +88,15 @@ function clickBoxFrom (x, y) {
 }
 
 function clickBoxTo (x, y) {
-    
+    map [x] [y] = map [moveFromX] [moveFromY];
+    map [moveFromX] [moveFromY] = " ";
+    turnMove();
+    marksMoveFrom();
+    showMap();
+}
+
+function turnMove () {
+    moveColor = moveColor == "white" ? "black" : "white"; 
 }
 
 function figureToHTML (figure) {
