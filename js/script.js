@@ -1,12 +1,17 @@
 let map = [];
 let inf = [];
 
+// Color of chess
+//      which side (black/white) now go on table
 let moveColor = "white";
 let moveFromX;
 let moveFromY;
 
 function initMap () {
-    // map [x] [y]
+    //                      map [x] [y]
+    //              initialized array for chess table
+    //              in 8x8 'x ---> y' coordinate form
+    // where in Array map we record the initial (start) position of the figures
     map = [
     //   y0   y1   y2   y3   y4   y5   y6   y7
         ["R", "P", " ", " ", " ", " ", "p", "r",], // x = 0
@@ -20,6 +25,8 @@ function initMap () {
     ]
 }
 function initInf () {
+    //                  Dynamic array 
+    // where we record result postion of the figures in game and show where figure can go
     inf = [
         [" ", " ", " ", " ", " ", " ", " ", " ",],
         [" ", " ", " ", " ", " ", " ", " ", " ",],
@@ -33,6 +40,7 @@ function initInf () {
 }
 
 function marksMoveFrom () {
+    // map the cells on chessboard
     initInf ();
     for (let x = 0; x <= 7; x++) {
         for (let y = 0; y <= 7; y++) {
@@ -44,6 +52,7 @@ function marksMoveFrom () {
 }
 
 function marksMoveTo () {
+    // check the coordinate on which we can to go
     initInf ();
     for (let x = 0; x <= 7; x++) {
         for (let y = 0; y <= 7; y++) {
@@ -55,6 +64,7 @@ function marksMoveTo () {
 }
 
 function canMoveFrom (x, y) {
+    // function which check what we can go from cell which user choose on table
     return getColor (x, y) == moveColor;
 }
 
@@ -66,6 +76,7 @@ function canMoveTo (x, y) {
 }
 
 function getColor (x, y) {
+    // define, which figure now go on table
     let figure = map [x] [y];
     if (figure == " ") 
         return "";
@@ -73,6 +84,9 @@ function getColor (x, y) {
 }
 
 function clickBox (x, y) {
+    // This function determines on which box user click
+    //      For this operation she use 2 functions 
+    //          which determines from which location to where go figure 
     if (inf [x] [y] == '1') {
         clickBoxFrom(x, y);
     } else if (inf [x] [y] == '2') {
@@ -81,6 +95,8 @@ function clickBox (x, y) {
 }
 
 function clickBoxFrom (x, y) {
+    // Function determines from which location step will be started
+    //      using for this x ---> y coordinates
     moveFromX = x;
     moveFromY = y;
     marksMoveTo();
@@ -88,6 +104,7 @@ function clickBoxFrom (x, y) {
 }
 
 function clickBoxTo (x, y) {
+    // Function determines final step of figure
     map [x] [y] = map [moveFromX] [moveFromY];
     map [moveFromX] [moveFromY] = " ";
     turnMove();
@@ -96,10 +113,15 @@ function clickBoxTo (x, y) {
 }
 
 function turnMove () {
+    // Function which turn move beetween black & white figures
     moveColor = moveColor == "white" ? "black" : "white"; 
 }
 
 function figureToHTML (figure) {
+    //             From 'value' to 'Figure' 
+    // This function change value from 'switch/case function' 
+    //      to real picture of figure on chess table
+    //           accepting value from Array
     switch (figure) {
         case "K" : return "&#9812;"; case "k" : return "&#9818;";
         case "Q" : return "&#9813;"; case "q" : return "&#9819;";
@@ -111,6 +133,9 @@ function figureToHTML (figure) {
     }
 }
 function showMap () {
+    //                    Table Map HTML + CSS
+    // function 'showMap' show chess table on the screen with 'tr' & 'td', 
+    //          with using  CSS with construnctions 'for' & 'if/else';
     html = "<table border='1' cellpadding='2' cellspacing='0'>";
     for (let y = 7; y >= 0; y--)
     {   
