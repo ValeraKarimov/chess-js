@@ -87,7 +87,10 @@ function isRook (figure) {return figure.toUpperCase() == "R";}
 function isPawn (figure) {return figure.toUpperCase() == "P";}
 
 function isCorrectKingMove (sx, sy, dx, dy) {
-
+    if (Math.abs (dx - sx) <= 1 && Math.abs (dy - sy) <= 1) {
+        return true;
+    }
+    return false;
 }
 function isCorrectQueenMove (sx, sy, dx, dy) {
     return true;
