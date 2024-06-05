@@ -108,8 +108,34 @@ function isCorrectKnightMove (sx, sy, dx, dy) {
     return false;
 }
 function isCorrectRookMove (sx, sy, dx, dy) {
+    let deltaX = Math.sign (dx - sx);
+    let deltaY = Math.sign (dy - sy);
+    // if (dx > sx) deltaX = 1;
+    // if (dx < sx) deltaX = -1;
+    // if (dy > sy) deltaY = 1;
+    // if (dy < sy) deltaY = -1;
+    if (Math.abs (deltaX) + Math.abs (deltaY) != 1){
+        return false;
+    } 
+    
+    do {
+        sx += deltaX;
+        sy += deltaY;
+        if (sx == dx && sy == dy) {
+            return true;
+        }
+        if (map [sx] [sy] != " ") {
+            return false;
+        }
+    } while (onMap (sx, sy));
+
     return true;
 }
+
+function onMap (x, y) {
+    return (x >= 0 && x <= 7 && y >= 0 && y <= 7);
+}
+
 function isCorrectPawnMove (sx, sy, dx, dy) {
     return true;
 }
