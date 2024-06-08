@@ -96,7 +96,22 @@ function isCorrectQueenMove (sx, sy, dx, dy) {
     return true;
 }
 function isCorrectBishopMove (sx, sy, dx, dy) {
-    return true;
+    let deltaX = Math.sign (dx - sx);
+    let deltaY = Math.sign (dy - sy);   
+    if (Math.abs (deltaX) + Math.abs (deltaY) != 2){
+        return false;
+    } 
+    
+    do {
+        sx += deltaX;
+        sy += deltaY;
+        if (sx == dx && sy == dy) {
+            return true;
+        }
+    } while (isEmpty (sx, sy));
+
+
+    return false;
 }
 function isCorrectKnightMove (sx, sy, dx, dy) {
     if (Math.abs (dx - sx) == 1 && Math.abs (dy - sy) == 2) {
@@ -109,11 +124,7 @@ function isCorrectKnightMove (sx, sy, dx, dy) {
 }
 function isCorrectRookMove (sx, sy, dx, dy) {
     let deltaX = Math.sign (dx - sx);
-    let deltaY = Math.sign (dy - sy);
-    // if (dx > sx) deltaX = 1;
-    // if (dx < sx) deltaX = -1;
-    // if (dy > sy) deltaY = 1;
-    // if (dy < sy) deltaY = -1;
+    let deltaY = Math.sign (dy - sy);   
     if (Math.abs (deltaX) + Math.abs (deltaY) != 1){
         return false;
     } 
@@ -124,12 +135,14 @@ function isCorrectRookMove (sx, sy, dx, dy) {
         if (sx == dx && sy == dy) {
             return true;
         }
-        if (map [sx] [sy] != " ") {
-            return false;
-        }
-    } while (onMap (sx, sy));
+    } while (isEmpty (sx, sy));
 
-    return true;
+    return false;
+}
+
+function isEmpty (x, y) {
+    if (!onMap (x, y)) return false;
+    return map [x] [y] == " ";
 }
 
 function onMap (x, y) {
@@ -170,10 +183,12 @@ function marksMoveTo () {
 
 function canMoveFrom (x, y) {
     // function which check what we can go from cell which user choose on table
+    if (!onMap (x, y)) return false;
     return getColor (x, y) == moveColor;
 }
 
 function canMoveTo (x, y) {
+    if (!onMap (x, y)) return false;
     if (map [x] [y] == " ") {
         return true;
     }
