@@ -92,9 +92,13 @@ function isCorrectKingMove (sx, sy, dx, dy) {
     }
     return false;
 }
-function isCorrectQueenMove (sx, sy, dx, dy) {
+
+function isCorrectLineMove (sx, sy, dx, dy, figure) {
     let deltaX = Math.sign (dx - sx);
-    let deltaY = Math.sign (dy - sy);    
+    let deltaY = Math.sign (dy - sy);
+    if (!isCorrectLineDelta (deltaX, deltaY, figure)) {
+        return false;   
+    }
     do {
         sx += deltaX;
         sy += deltaY;
@@ -104,20 +108,38 @@ function isCorrectQueenMove (sx, sy, dx, dy) {
     } while (isEmpty (sx, sy));
     return false;
 }
-function isCorrectBishopMove (sx, sy, dx, dy) {
-    let deltaX = Math.sign (dx - sx);
-    let deltaY = Math.sign (dy - sy);   
-    if (Math.abs (deltaX) + Math.abs (deltaY) != 2){
-        return false;
-    }  
-    do {
-        sx += deltaX;
-        sy += deltaY;
-        if (sx == dx && sy == dy) {
-            return true;
-        }
-    } while (isEmpty (sx, sy));
+
+function isCorrectLineDelta (deltaX, deltaY, figure) {
+    if (isRook (figure)) {
+        return isCorrectRookDelta (deltaX, deltaY);
+    }
+    if (isBishop (figure)) {
+        return isCorrectBishopDelta (deltaX, deltaY);
+    }
+    if (isQueen (figure)) {
+        return isCorrectQueenDelta (deltaX, deltaY);
+    }
     return false;
+}
+
+function isCorrectRookDelta (deltaX, deltaY) {
+    return Math.abs (deltaX) + Math.abs (deltaY) == 1;
+}
+
+function isCorrectBishopDelta (deltaX, deltaY) {
+    return Math.abs (deltaX) + Math.abs (deltaY) == 2;
+}
+
+function isCorrectQueenDelta (deltaX, deltaY) {
+    return true;
+}
+
+function isCorrectQueenMove (sx, sy, dx, dy) {
+    return isCorrectLineMove (sx, sy, dx, dy, "Q");
+}
+
+function isCorrectBishopMove (sx, sy, dx, dy) {
+    return isCorrectLineMove (sx, sy, dx, dy, "B");
 }
 function isCorrectKnightMove (sx, sy, dx, dy) {
     if (Math.abs (dx - sx) == 1 && Math.abs (dy - sy) == 2) {
@@ -129,21 +151,7 @@ function isCorrectKnightMove (sx, sy, dx, dy) {
     return false;
 }
 function isCorrectRookMove (sx, sy, dx, dy) {
-    let deltaX = Math.sign (dx - sx);
-    let deltaY = Math.sign (dy - sy);   
-    if (Math.abs (deltaX) + Math.abs (deltaY) != 1){
-        return false;
-    } 
-    
-    do {
-        sx += deltaX;
-        sy += deltaY;
-        if (sx == dx && sy == dy) {
-            return true;
-        }
-    } while (isEmpty (sx, sy));
-
-    return false;
+    return isCorrectLineMove (sx, sy, dx, dy, "R");
 }
 
 function isEmpty (x, y) {
