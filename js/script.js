@@ -93,15 +93,8 @@ function isCorrectKingMove (sx, sy, dx, dy) {
     return false;
 }
 function isCorrectQueenMove (sx, sy, dx, dy) {
-    return true;
-}
-function isCorrectBishopMove (sx, sy, dx, dy) {
     let deltaX = Math.sign (dx - sx);
-    let deltaY = Math.sign (dy - sy);   
-    if (Math.abs (deltaX) + Math.abs (deltaY) != 2){
-        return false;
-    } 
-    
+    let deltaY = Math.sign (dy - sy);    
     do {
         sx += deltaX;
         sy += deltaY;
@@ -109,8 +102,21 @@ function isCorrectBishopMove (sx, sy, dx, dy) {
             return true;
         }
     } while (isEmpty (sx, sy));
-
-
+    return false;
+}
+function isCorrectBishopMove (sx, sy, dx, dy) {
+    let deltaX = Math.sign (dx - sx);
+    let deltaY = Math.sign (dy - sy);   
+    if (Math.abs (deltaX) + Math.abs (deltaY) != 2){
+        return false;
+    }  
+    do {
+        sx += deltaX;
+        sy += deltaY;
+        if (sx == dx && sy == dy) {
+            return true;
+        }
+    } while (isEmpty (sx, sy));
     return false;
 }
 function isCorrectKnightMove (sx, sy, dx, dy) {
