@@ -48,12 +48,8 @@ function canMove (sx, sy, dx, dy) {
     if (!canMoveTo(dx, dy)){
         return false;
     }
-    if (!isCorrectMove(sx, sy, dx, dy)) {
-        return false;
-    }
-    return true;
+    return isCorrectMove(sx, sy, dx, dy)
 }
-
 function isCorrectMove (sx, sy, dx, dy) {
 
     let figure = map [sx] [sy];
@@ -164,7 +160,39 @@ function onMap (x, y) {
 }
 
 function isCorrectPawnMove (sx, sy, dx, dy) {
+    if (getColor(sx, sy) == "white") {
+        return isCorrectWhitePawnMove (sx, sy, dx, dy)
+    }
+    if (getColor(sx, sy) == "black") {
+        return isCorrectBlackPawnMove (sx, sy, dx, dy)
+    }
+    return false;
+}
+
+function isCorrectWhitePawnMove (sx, sy, dx, dy) {
+    if (sy < 1 || sy > 6) {
+        return false;
+    }
+    if (isPawnPassant ()) {
+        return true;
+    }
+    if (!isEmpty (dx, dy)) {
+        // its passant?
+        if (Math.abs (dx - sx) != 1) {
+            // step left/right
+            return false;
+        }
+        return dy - sy == 1;
+    }
     return true;
+}
+
+function isCorrectBlackPawnMove () {
+    return true;
+}
+
+function isPawnPassant () {
+    return false;
 }
 
 function marksMoveFrom () {
