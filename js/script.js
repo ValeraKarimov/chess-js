@@ -184,7 +184,19 @@ function isCorrectWhitePawnMove (sx, sy, dx, dy) {
         }
         return dy - sy == 1;
     }
-    return true;
+    if (dx != sx) {
+        return false;
+    }
+    if (dy - sy == 1) {
+        return true;
+    }
+    if (dy - sy == 2) {
+        if (sy != 1) {
+            return false;
+        }
+        return isEmpty (sx, sy + 1);
+    }
+    return false;
 }
 
 function isCorrectBlackPawnMove () {
