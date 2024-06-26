@@ -17,7 +17,7 @@ function initMap () {
     map = [
     //   y0   y1   y2   y3   y4   y5   y6   y7
         ["R", "P", " ", " ", " ", " ", "p", "r",], // x = 0
-        ["N", "P", " ", " ", " ", " ", "p", "n",], // x = 1
+        ["N", "p", " ", " ", " ", " ", "P", "n",], // x = 1
         ["B", "P", " ", " ", " ", " ", "p", "b",], // x = 2
         ["Q", "P", " ", " ", " ", " ", "p", "q",], // x = 3
         ["K", "P", " ", " ", " ", " ", "p", "k",], // x = 4
@@ -292,16 +292,13 @@ function clickBoxTo (toX, toY) {
     fromFigure =  map [moveFromX] [moveFromY];
     toFigure = map [toX, toY];
     
-   
+   pawnFigure = promotePawn (fromFigure, toY);
 
-    map [toX] [toY] = fromFigure;
+
+    map [toX] [toY] = pawnFigure == " " ? fromFigure : pawnFigure;
     map [moveFromX] [moveFromY] = " ";
 
-    if (isPawn (fromFigure)) {
-        if (toX == pawnAttackX && toY == pawnAttackY) {
-            map [toX] [toY - 1] = " "; // white
-        }
-    }
+
 
     checkPawnAttack (fromFigure, toY);
 
@@ -310,7 +307,39 @@ function clickBoxTo (toX, toY) {
     showMap();
 }
 
-function checkPawnAttack (fromFigure, toY) {
+function promotePawn (fromFigure, toY) {
+    if (!isPawn (fromFigure)) {
+        return " ";
+    }
+    if (!(toY == 7 || toY == 0)) {
+        return " ";
+    }
+    do {
+        figure = prompt ("Select figure to Promote: Q R B N", "Q");
+    } while (!(
+        isQueen (figure) ||
+        isRook (figure) ||
+        isBishop (figure) ||
+        isKnight (figure)));
+        if (moveColor == "white") {
+            fromFigure == figure.toUpperCase();
+        } else {
+            fromFigure == figure.toLowerCase();
+        } return fromFigure;
+
+  
+}
+
+function checkPawnAttack (fromFigure,toX, toY) {
+    if (isPawn (fromFigure)) {
+        if (toX == pawnAttackX && toY == pawnAttackY) {
+            if (moveColor == "white") {
+                map [toX] [toY - 1] = " "; // white
+            }  else {
+                map [toX] [toY + 1] = " "; // black
+            }
+        }
+    }
     pawnAttackX = -1;
     pawnAttackY = -1;
     if (isPawn (fromFigure)) {
