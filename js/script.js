@@ -162,20 +162,20 @@ function onMap (x, y) {
 }
 
 function isCorrectPawnMove (sx, sy, dx, dy) {
+    if (sy < 1 || sy > 6) {
+        return false;
+    }
     if (getColor(sx, sy) == "white") {
-        return isCorrectWhitePawnMove (sx, sy, dx, dy)
+        return isCorrectSignPawnMove (sx, sy, dx, dy, +1)
     }
     if (getColor(sx, sy) == "black") {
-        return isCorrectBlackPawnMove (sx, sy, dx, dy)
+        return isCorrectSignPawnMove (sx, sy, dx, dy, -1)
     }
     return false;
 }
 
-function isCorrectWhitePawnMove (sx, sy, dx, dy) {
-    if (sy < 1 || sy > 6) {
-        return false;
-    }
-    if (isPawnPassant (sx, sy, dx, dy)) {
+function isCorrectSignPawnMove (sx, sy, dx, dy, sign) {
+    if (isPawnPassant (sx, sy, dx, dy, sign)) {
         return true;
     }
     if (!isEmpty (dx, dy)) {
@@ -184,35 +184,34 @@ function isCorrectWhitePawnMove (sx, sy, dx, dy) {
             // step left/right
             return false;
         }
-        return dy - sy == 1;
+        return dy - sy == sign;
     }
     if (dx != sx) {
         return false;
     }
-    if (dy - sy == 1) {
+    if (dy - sy == sign) {
         return true;
     }
-    if (dy - sy == 2) {
-        if (sy != 1) {
+    if (dy - sy == sign * 2) {
+        if (sy != 1 && sy != 6) {
             return false;
         }
-        return isEmpty (sx, sy + 1);
+        return isEmpty (sx, sy + sign);
     }
     return false;
 }
 
-function isCorrectBlackPawnMove () {
-    return true;
-}
-
-function isPawnPassant (sx, sy, dx, dy) {
+function isPawnPassant (sx, sy, dx, dy, sign) {
     if (!(dx == pawnAttackX && dy == pawnAttackY)) {
         return false;
     }
-    if (sy != 4) {
+    if (sign == +1 && sy != 4) {
         return false;
     }
-    if (dy - sy != 1) {
+    if (sign == -1 && sy != 3) {
+        return false;
+    }
+    if (dy - sy != sign) {
         return false;
     }
     return (Math.abs (dx - sx) == 1);
