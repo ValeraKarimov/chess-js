@@ -17,7 +17,7 @@ function initMap () {
     map = [
     //   y0   y1   y2   y3   y4   y5   y6   y7
         ["R", "P", " ", " ", " ", " ", "p", "r",], // x = 0
-        ["N", "p", " ", " ", " ", " ", "P", "n",], // x = 1
+        ["N", "P", " ", " ", " ", " ", "p", "n",], // x = 1
         ["B", "P", " ", " ", " ", " ", "p", "b",], // x = 2
         ["Q", "P", " ", " ", " ", " ", "p", "q",], // x = 3
         ["K", "P", " ", " ", " ", " ", "p", "k",], // x = 4
@@ -292,15 +292,12 @@ function clickBoxTo (toX, toY) {
     fromFigure =  map [moveFromX] [moveFromY];
     toFigure = map [toX, toY];
     
-   pawnFigure = promotePawn (fromFigure, toY);
-
+    pawnFigure = promotePawn (fromFigure, toY);
 
     map [toX] [toY] = pawnFigure == " " ? fromFigure : pawnFigure;
     map [moveFromX] [moveFromY] = " ";
 
-
-
-    checkPawnAttack (fromFigure, toY);
+    checkPawnAttack (fromFigure, toX, toY);
 
     turnMove();
     marksMoveFrom();
@@ -321,16 +318,14 @@ function promotePawn (fromFigure, toY) {
         isRook (figure) ||
         isBishop (figure) ||
         isKnight (figure)));
-        if (moveColor == "white") {
-            fromFigure == figure.toUpperCase();
-        } else {
-            fromFigure == figure.toLowerCase();
-        } return fromFigure;
-
-  
+    if (moveColor == "white") {
+        return figure.toUpperCase();
+    } else {
+        return figure.toLowerCase();
+    }
 }
 
-function checkPawnAttack (fromFigure,toX, toY) {
+function checkPawnAttack (fromFigure, toX, toY) {
     if (isPawn (fromFigure)) {
         if (toX == pawnAttackX && toY == pawnAttackY) {
             if (moveColor == "white") {
@@ -348,7 +343,6 @@ function checkPawnAttack (fromFigure,toX, toY) {
             pawnAttackY = (moveFromY + toY) / 2;
         }
     }
-
 }
 
 function turnMove () {
