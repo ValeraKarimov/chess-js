@@ -8,6 +8,8 @@ let moveFromX;
 let moveFromY;
 let pawnAttackX;
 let pawnAttackY; // coordinates of the broken field
+let fromFigure;
+let toFigure;
 
 function initMap () {
     //                      map [x] [y]
@@ -50,8 +52,18 @@ function canMove (sx, sy, dx, dy) {
     if (!canMoveTo(dx, dy)){
         return false;
     }
-    return isCorrectMove(sx, sy, dx, dy)
+    if (!isCorrectMove(sx, sy, dx, dy)) {
+        return false;
+    }
+    if (!isCheck ()) {
+        return true;
+    } return false;
 }
+
+function isCheck () {
+
+}
+
 function isCorrectMove (sx, sy, dx, dy) {
 
     let figure = map [sx] [sy];
@@ -287,15 +299,24 @@ function clickBoxFrom (x, y) {
     showMap();
 }
 
+function moveFigure (sx, sy, dx, dy) {
+    fromFigure =  map [sx] [sy];
+    toFigure = map [dx] [dy];
+    // map [toX] [toY] = pawnFigure == " " ? fromFigure : pawnFigure;
+    map [dx] [dy] = fromFigure;
+    map [sx] [sy] = " ";
+
+}
+
+function backFigure (sx, sy, dx, dy) {
+    map [sx] [sy] = fromFigure;
+    map [dx] [dy] = toFigure;
+}
+
 function clickBoxTo (toX, toY) {
     // Function determines final step of figure
-    fromFigure =  map [moveFromX] [moveFromY];
-    toFigure = map [toX, toY];
-    
-    pawnFigure = promotePawn (fromFigure, toY);
-
-    map [toX] [toY] = pawnFigure == " " ? fromFigure : pawnFigure;
-    map [moveFromX] [moveFromY] = " ";
+    moveFigure (moveFromX, moveFromY, toX, toY);
+    promotePawn (fromFigure, toX, toY);
 
     checkPawnAttack (fromFigure, toX, toY);
 
@@ -304,12 +325,12 @@ function clickBoxTo (toX, toY) {
     showMap();
 }
 
-function promotePawn (fromFigure, toY) {
+function promotePawn (fromFigure, toX, toY) {
     if (!isPawn (fromFigure)) {
-        return " ";
+        return;
     }
     if (!(toY == 7 || toY == 0)) {
-        return " ";
+        return;
     }
     do {
         figure = prompt ("Select figure to Promote: Q R B N", "Q");
@@ -319,10 +340,11 @@ function promotePawn (fromFigure, toY) {
         isBishop (figure) ||
         isKnight (figure)));
     if (moveColor == "white") {
-        return figure.toUpperCase();
+        figure.toUpperCase();
     } else {
-        return figure.toLowerCase();
+        figure.toLowerCase();
     }
+    map [toX] [toY] = figure;
 }
 
 function checkPawnAttack (fromFigure, toX, toY) {
