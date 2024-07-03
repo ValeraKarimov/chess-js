@@ -55,13 +55,39 @@ function canMove (sx, sy, dx, dy) {
     if (!isCorrectMove(sx, sy, dx, dy)) {
         return false;
     }
-    if (!isCheck ()) {
+    if (!isCheck (sx, sy, dx, dy)) {
         return true;
     } return false;
 }
 
-function isCheck () {
+function isCheck (sx, sy, dx, dy) {
+    moveFigure (sx, sy, dx, dy);
+    king = findFigure (moveColor == "white" ? "K" : 'k');
+    // map [king.x] [king.y] = "P";
+    turnMove ();
+    let canBeEaten = false;
+    for (let x = 0; x <= 7; x ++) {
+        for (let y = 0; y <= 7; y ++) {
+            if (getColor (x, y) == moveColor) {
+                if (isCorrectMove (x, y, king.x, king.y)) {
+                    canBeEaten = true;
+                }
+            }
+        }
+    }
+    backFigure (sx, sy, dx, dy);
+    return canBeEaten;
+}
 
+function findFigure (figure) {
+        for (let x = 0; x <= 7; x ++) {
+        for (let y = 0; y <= 7; y ++) {
+            if (map [x] [y] == figure) {
+                return {x:x, y:y};
+            }
+        }
+    }
+    return {x:-1, y:-1};
 }
 
 function isCorrectMove (sx, sy, dx, dy) {
@@ -86,7 +112,7 @@ function isCorrectMove (sx, sy, dx, dy) {
     if (isPawn (figure)) {
         return isCorrectPawnMove (sx, sy, dx, dy);
     }
-    return true;
+    return false;
 }
 
 function isKing (figure) {return figure.toUpperCase() == "K";}
