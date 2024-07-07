@@ -10,6 +10,7 @@ let pawnAttackX;
 let pawnAttackY; // coordinates of the broken field
 let fromFigure;
 let toFigure;
+let possibleMoves;
 
 function initMap () {
     //                      map [x] [y]
@@ -55,28 +56,51 @@ function canMove (sx, sy, dx, dy) {
     if (!isCorrectMove(sx, sy, dx, dy)) {
         return false;
     }
-    if (!isCheck (sx, sy, dx, dy)) {
+    if (!isCheckAfterMove (sx, sy, dx, dy)) {
         return true;
     } return false;
 }
 
-function isCheck (sx, sy, dx, dy) {
+function isCheckAfterMove (sx, sy, dx, dy) {
     moveFigure (sx, sy, dx, dy);
-    king = findFigure (moveColor == "white" ? "K" : 'k');
-    // map [king.x] [king.y] = "P";
+    // 1. make step with figure
     turnMove ();
-    let canBeEaten = false;
+
+    // map [king.x] [king.y] = "P";
+    // 3. Turn move
+    let check = isCheck ();
+    turnMove ();
+    // 6. Give step back
+    backFigure (sx, sy, dx, dy);
+    // 7. Return step
+    return check;
+}
+
+function isCheck () {
+    king = findFigure (moveColor == "white" ? "k" : "K");
+    // 2. found king
     for (let x = 0; x <= 7; x ++) {
         for (let y = 0; y <= 7; y ++) {
             if (getColor (x, y) == moveColor) {
+    // 4. Sort all black (or white) figures 
                 if (isCorrectMove (x, y, king.x, king.y)) {
-                    canBeEaten = true;
+    // 5. check, what can black (white) figure go to the cell of white (black) king.
+                    return true;
                 }
             }
         }
     }
-    backFigure (sx, sy, dx, dy);
-    return canBeEaten;
+    return false;
+}
+
+function isCheckmate () {
+    if (!isCheck ()) return false;
+    return possibleMoves == 0;
+}
+
+function isStalemate () {
+    if (isCheck ()) return false;
+    return possibleMoves == 0;
 }
 
 function findFigure (figure) {
@@ -257,6 +281,7 @@ function isPawnPassant (sx, sy, dx, dy, sign) {
 
 function marksMoveFrom () {
     // map the cells on chessboard
+    possibleMoves == 0;
     initInf ();
     for (let sx = 0; sx <= 7; sx++) {
         for (let sy = 0; sy <= 7; sy++) {
@@ -264,6 +289,7 @@ function marksMoveFrom () {
                 for (let dy = 0; dy <= 7; dy++) {
                     if (canMove (sx, sy, dx, dy)) {
                         inf [sx] [sy] = 1;
+                        possibleMoves ++;
                     }
                 }
             }
@@ -447,7 +473,23 @@ function showMap () {
         html += "<td style='text-align: center'>"+ x +"</td>";
 
     document.getElementById ("board").innerHTML = html;
+    showInfo ();
 }
+
+function showInfo () {
+    let html = "Turns: " + moveColor + " ";
+    turnMove ();
+    if (isCheckmate ()) {
+        html += "CHECKMATE";
+    } else if (isStalemate ()) {
+        html += "STALEMATE";
+    } else if (isCheck ()) {
+        html += "CHECK";
+    }
+    turnMove ();
+    document.getElementById("info").innerHTML = html;
+}
+
 initMap();
 marksMoveFrom();
 showMap();
