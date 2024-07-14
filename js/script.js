@@ -11,6 +11,9 @@ let pawnAttackY; // coordinates of the broken field
 let fromFigure;
 let toFigure;
 let possibleMoves;
+let savePawnX = -1;
+let savePawnY = -1;
+let savePawnFigure = " ";
 
 function initMap () {
     //                      map [x] [y]
@@ -357,19 +360,21 @@ function moveFigure (sx, sy, dx, dy) {
     // map [toX] [toY] = pawnFigure == " " ? fromFigure : pawnFigure;
     map [dx] [dy] = fromFigure;
     map [sx] [sy] = " ";
+    movePawnAttack (fromFigure, dx, dy);
 
 }
 
 function backFigure (sx, sy, dx, dy) {
     map [sx] [sy] = fromFigure;
     map [dx] [dy] = toFigure;
+    backPawnAttack (fromFigure, dx, dy);
 }
 
 function clickBoxTo (toX, toY) {
     // Function determines final step of figure
     moveFigure (moveFromX, moveFromY, toX, toY);
     promotePawn (fromFigure, toX, toY);
-
+    
     checkPawnAttack (fromFigure, toX, toY);
 
     turnMove();
@@ -399,18 +404,29 @@ function promotePawn (fromFigure, toX, toY) {
     map [toX] [toY] = figure;
 }
 
-function checkPawnAttack (fromFigure, toX, toY) {
+function movePawnAttack (fromFigure, toX, toY) {
     if (isPawn (fromFigure)) {
         if (toX == pawnAttackX && toY == pawnAttackY) {
-            if (moveColor == "white") {
-                map [toX] [toY - 1] = " "; // white
-            }  else {
-                map [toX] [toY + 1] = " "; // black
-            }
+            let y = moveColor == "white" ? toY - 1 : toY + 1;
+            savePawnFigure = map [toX] [y];
+            savePawnX = toX;
+            savePawnY = Y;
+            map [toX] [y] = " ";
         }
     }
+}
+
+function backPawnAttack () {
+    if (savePawnX == -1) {
+        return;
+    }
+    map [savePawnX] [savePawnY] = savePawnFigure;
+}
+
+function checkPawnAttack (fromFigure, toX, toY) {
     pawnAttackX = -1;
     pawnAttackY = -1;
+    savePawnX = -1;
     if (isPawn (fromFigure)) {
         if (Math.abs (toY - moveFromY)) {
             pawnAttackX = moveFromX;
