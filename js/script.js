@@ -14,12 +14,22 @@ let possibleMoves;
 let savePawnX = -1;
 let savePawnY = -1;
 let savePawnFigure = " ";
+let canWhiteCastleLeft = true;
+let canWhiteCastleRight = true;
+let canBlackCastleLeft = true;
+let canBlackCastleRight = true;
+
+
 
 function initMap () {
     //                      map [x] [y]
     //              initialized array for chess table
     //              in 8x8 'x ---> y' coordinate form
     // where in Array map we record the initial (start) position of the figures
+canWhiteCastleLeft = true;
+canWhiteCastleRight = true;
+canBlackCastleLeft = true;
+canBlackCastleRight = true;
     map = [
     //   y0   y1   y2   y3   y4   y5   y6   y7
         ["R", "P", " ", " ", " ", " ", "p", "r",], // x = 0
@@ -373,13 +383,50 @@ function backFigure (sx, sy, dx, dy) {
 function clickBoxTo (toX, toY) {
     // Function determines final step of figure
     moveFigure (moveFromX, moveFromY, toX, toY);
+
     promotePawn (fromFigure, toX, toY);
     
     checkPawnAttack (fromFigure, toX, toY);
-
+    updateCastleFlags (moveFromX, moveFromY, toX, toY);
     turnMove();
     marksMoveFrom();
     showMap();
+}
+
+function updateCastleFlags (fromX, fromY, toX, toY) {
+
+    let figure = map [toX] [toY];
+    
+    if (figure == "K") {
+        canWhiteCastleRight == false;
+        canWhiteCastleLeft == false;
+    }
+    if (figure == "k") {
+        canBlackCastleRight == false;
+        canBlackCastleLeft == false;
+    }
+
+    if (figure == "K") {
+        canWhiteCastleRight == false;
+        canWhiteCastleLeft == false;
+    }
+    if (figure == "k") {
+        canBlackCastleRight == false;
+        canBlackCastleLeft == false;
+    }
+
+    if (figure == "R" && fromX == 0 && fromY == 0) {
+        canWhiteCastleLeft = false;
+    }
+    if (figure == "R" && fromX == 7 && fromY == 0) {
+        canWhiteCastleRight = false;
+    }
+    if (figure == "r" && fromX == 0 && fromY == 7) {
+        canBlackCastleLeft = false;
+    }
+    if (figure == "r" && fromX == 7 && fromY == 7) {
+        canBlackCastleRight = false;
+    }
 }
 
 function promotePawn (fromFigure, toX, toY) {
@@ -503,6 +550,11 @@ function showInfo () {
         html += "CHECK";
     }
     turnMove ();
+    html +=
+        (canWhiteCastleLeft ? ' WCL' : '') + 
+        (canWhiteCastleRight ? ' WCR' : '') + 
+        (canBlackCastleLeft ? ' BCL' : '') + 
+        (canWhiteCastleRight ? ' BCR' : '');
     document.getElementById("info").innerHTML = html;
 }
 
