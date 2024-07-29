@@ -77,12 +77,10 @@ function canMove (sx, sy, dx, dy) {
 function isCheckAfterMove (sx, sy, dx, dy) {
     moveFigure (sx, sy, dx, dy);
     // 1. make step with figure
-    turnMove ();
 
     // map [king.x] [king.y] = "P";
     // 3. Turn move
     let check = isCheck ();
-    turnMove ();
     // 6. Give step back
     backFigure (sx, sy, dx, dy);
     // 7. Return step
@@ -90,11 +88,11 @@ function isCheckAfterMove (sx, sy, dx, dy) {
 }
 
 function isCheck () {
-    king = findFigure (moveColor == "white" ? "k" : "K");
+    king = findFigure (moveColor == "white" ? "K" : "k");
     // 2. found king
     for (let x = 0; x <= 7; x ++) {
         for (let y = 0; y <= 7; y ++) {
-            if (getColor (x, y) == moveColor) {
+            if (getColor (x, y) != moveColor) {
     // 4. Sort all black (or white) figures 
                 if (isCorrectMove (x, y, king.x, king.y)) {
     // 5. check, what can black (white) figure go to the cell of white (black) king.
@@ -163,8 +161,54 @@ function isCorrectKingMove (sx, sy, dx, dy) {
     if (Math.abs (dx - sx) <= 1 && Math.abs (dy - sy) <= 1) {
         return true;
     }
+    return canCastle (sx, sy, dx, dy);
+}
+
+function canCastle (sx, sy, dx, dy) {
+    // if (dy != sy) return false;
+    // if (Math.abs (dx - sx) != 2) return false;
+    // if (isCheck()) return false;
+    // // if (sx != 4) return false;
+    // // if (sy != 0 && sy != 7) return false;
+    // if (map [sx] [sy] == 'K' && sx == 4 && sy == 0) {
+    //     return canWhiteCastle (dx, dy);
+    // }
+    // if (map [sx] [sy] == 'K' && sx == 4 && sy == 7) {
+    //     return canBlackCastle (dx, dy);
+    // }
+    let figure = map [sx] [sy];
+    if (figure = "K" 
+            && sx == 4 && sy == 0 
+            && dx == 6 && dy == 0) return canWhiteCRight ();
+    if (figure = "K" 
+        && sx == 4 && sy == 0 
+        && dx == 2 && dy == 0) return canWhiteCLeft ();
+    if (figure = "k" 
+            && sx == 4 && sy == 7 
+            && dx == 6 && dy == 7) return canBlackCRight ();
+    if (figure = "k" 
+        && sx == 4 && sy == 7 
+        && dx == 6 && dy == 7) return canBlackCLeft ();
+    
     return false;
 }
+
+function canWhiteCRight () {
+    return true;
+}
+
+function canWhiteCLeft () {
+    return true;
+}
+
+function canBlackCRight () {
+    return true;
+}
+
+function canBlackCLeft () {
+    return true;
+}
+
 
 function isCorrectLineMove (sx, sy, dx, dy, figure) {
     let deltaX = Math.sign (dx - sx);
@@ -522,7 +566,7 @@ function showMap () {
                 html += "<td height=50 width=50 " + 
                         "style='background-color: "+color+";" + 
                         "text-align: center;" + 
-                        "font-size: 40px; " +
+                        "font-size: 35px; " +
                         "color: #000000; " +
                         "'onclick='clickBox("+ x +", "+ y +");'>";
                 html += figureToHTML (map [x] [y]);
@@ -541,7 +585,6 @@ function showMap () {
 
 function showInfo () {
     let html = "Turns: " + moveColor + " ";
-    turnMove ();
     if (isCheckmate ()) {
         html += "CHECKMATE";
     } else if (isStalemate ()) {
@@ -549,7 +592,6 @@ function showInfo () {
     } else if (isCheck ()) {
         html += "CHECK";
     }
-    turnMove ();
     html +=
         (canWhiteCastleLeft ? ' WCL' : '') + 
         (canWhiteCastleRight ? ' WCR' : '') + 
