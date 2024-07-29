@@ -194,18 +194,44 @@ function canCastle (sx, sy, dx, dy) {
 }
 
 function canWhiteCRight () {
+    if (!canWhiteCastleRight) return false;
+    if (isCheck ()) return false;
+    if (isCheckAfterMove (4, 0, 5, 0)) return false;
+    if (!isEmpty (5, 0)) return false;
+    if (!isEmpty (6, 0)) return false; 
+    if (map [7] [0] != "R") return false;
     return true;
 }
 
 function canWhiteCLeft () {
+    if (!canWhiteCastleLeft) return false;
+    if (isCheck ()) return false;
+    if (isCheckAfterMove (4, 0, 3, 0)) return false;
+    if (!isEmpty (3, 0)) return false;
+    if (!isEmpty (2, 0)) return false; 
+    if (!isEmpty (1, 0)) return false; 
+    if (map [0] [0] != "R") return false;
     return true;
 }
 
 function canBlackCRight () {
+    if (!canBlackCastleRight) return false;
+    if (isCheck ()) return false;
+    if (isCheckAfterMove (4, 7, 5, 7)) return false;
+    if (!isEmpty (5, 7)) return false;
+    if (!isEmpty (6, 7)) return false; 
+    if (map [7] [7] != "r") return false;
     return true;
 }
 
 function canBlackCLeft () {
+    if (!canBlackCastleLeft) return false;
+    if (isCheck ()) return false;
+    if (isCheckAfterMove (4, 7, 3, 7)) return false;
+    if (!isEmpty (3, 7)) return false;
+    if (!isEmpty (2, 7)) return false; 
+    if (!isEmpty (1, 7)) return false; 
+    if (map [0] [7] != "r") return false;
     return true;
 }
 
