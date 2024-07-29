@@ -455,9 +455,11 @@ function clickBoxTo (toX, toY) {
     moveFigure (moveFromX, moveFromY, toX, toY);
 
     promotePawn (fromFigure, toX, toY);
-    
     checkPawnAttack (fromFigure, toX, toY);
+    
     updateCastleFlags (moveFromX, moveFromY, toX, toY);
+    moveCastlingRook (moveFromX, moveFromY, toX, toY);
+
     turnMove();
     marksMoveFrom();
     showMap();
@@ -497,6 +499,15 @@ function updateCastleFlags (fromX, fromY, toX, toY) {
     if (figure == "r" && fromX == 7 && fromY == 7) {
         canBlackCastleRight = false;
     }
+}
+
+function moveCastlingRook (fromX, fromY, toX, toY) {
+    if (!isKing (map [toX] [toY])) return;
+    if (Math.abs (toX - fromX) != 2) return;
+    if (toX == 6 && toY == 0) { map [7] [0] = ' '; map [5] [0] = 'R'; }
+    if (toX == 2 && toY == 0) { map [0] [0] = ' '; map [3] [0] = 'R'; }
+    if (toX == 6 && toY == 7) { map [7] [7] = ' '; map [5] [7] = 'r'; }
+    if (toX == 2 && toY == 7) { map [0] [7] = ' '; map [3] [7] = 'r'; }
 }
 
 function promotePawn (fromFigure, toX, toY) {
